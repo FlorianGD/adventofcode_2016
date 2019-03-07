@@ -45,3 +45,45 @@ with open('day02_input.txt', 'r') as f:
     day02 = f.read().splitlines()
 
 print(f'Solution for part 1: {find_combination(day02)}')
+
+# Part 2
+# Nom the keypad is
+#     1
+#   2 3 4
+# 5 6 7 8 9
+#   A B C
+#     D
+# And we start at 5
+
+
+def find_number2(instr: str, start_pos=(2, 0)) -> Tuple[str, Tuple[int, int]]:
+    keypad = np.array([['', '', '1', '', ''],
+                       ['', '2', '3', '4', ''],
+                       ['5', '6', '7', '8', '9'],
+                       ['', 'A', 'B', 'C', ''],
+                       ['', '', 'D', '', '']])
+    position = np.array(start_pos)
+    directions = {'U': [-1, 0], 'L': [0, -1], 'D': [1, 0], 'R': [0, 1]}
+    reverse = {'U': 'D', 'L': 'R', 'D': 'U', 'R': 'L'}
+    for direct in instr:
+        position += directions[direct]
+        position.clip(0, 4, out=position)
+        if keypad[tuple(position)] == '':
+            position += directions[reverse[direct]]
+    final_position = tuple(position)
+    return keypad[final_position], final_position
+
+
+def find_combination2(instructions: List) -> str:
+    """Given a list of instructions, find the combination"""
+    start_pos = (2, 0)
+    combination = []
+    for instr in instructions:
+        num, start_pos = find_number2(instr, start_pos)
+        combination.append(num)
+    return ''.join(combination)
+
+
+assert find_combination2(['ULL', 'RRDDD', 'LURDL', 'UUUUD']) == '5DB3'
+
+print(f'Solution for part 2: {find_combination2(day02)}')
