@@ -21,10 +21,9 @@ def next_letter(door_id: str, start: Optional[int] = 0) -> Tuple[int, str]:
     while True:
         h = md5((door_id + str(start)).encode()).hexdigest()
         if h.startswith("00000"):
-            break
+            return (start, h)
         else:
             start += 1
-    return (start, h)
 
 
 def find_password(door_id: str) -> Tuple[str, List[Tuple[int, str]]]:
@@ -49,25 +48,23 @@ def find_password_p2(door_id: str, init_list: List[Tuple[int, str]]) -> str:
     0 and 7), and in this case, the letter is the 7th character.
     init_list is already computed hashes that start with 5 zeros, to save time.
     """
-    pwd_list = [''] * 8
+    pwd_list = ['-'] * 8
 
-    def change_pwd_if_valid(hash0: str, pwd: List[str] = pwd_list) -> bool:
+    def change_pwd_if_valid(hash0: str, pwd: List[str] = pwd_list) -> None:
         """Modifiy pwd in place if valid and not already set"""
         try:
-            pos = int(hash0[5])
-            if pwd[pos] == '':
+            pos = int(hash0[5], 16)
+            if pwd[pos] == '-':
                 pwd[pos] = hash0[6]
-                return True
-            else:
-                return False
-        except (ValueError, IndexError):
-            return False
+                print(''.join(pwd))
+        except IndexError:
+            pass
 
-    # First pass using the already calculated hahst
+    # First pass using the already calculated hahses
     for i, hash0 in init_list:
         change_pwd_if_valid(hash0)
     start = i + 1
-    while '' in pwd_list:
+    while '-' in pwd_list:
         start, hash0 = next_letter(door_id, start=start)
         start += 1
         change_pwd_if_valid(hash0)
