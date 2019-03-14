@@ -40,3 +40,37 @@ def load_input(filename: str) -> List[str]:
 
 day07 = load_input('day07_input.txt')
 print(f'Solution for part 1: {sum(detect_abba(l) for l in day07)}')
+
+# Part 2
+# We mist find aba outside brackets with corresponding bab inside brackets.
+# If so, the address is said to support SSL
+# We need to find overlapping groups, so I referred to this SO answer
+# https://stackoverflow.com/questions/11430863/how-to-find-overlapping-matches
+# -with-a-regexp
+
+ABA = re.compile(r'(?=([a-z])([a-z])\1)')
+
+
+def support_ssl(address: str) -> bool:
+    inside_brackets = BRACKETS.findall(address)
+    outside_brackets = [s.split(']')[-1] for s in address.split('[')]
+    # Find matches and flatten the list
+    inside_matches = [
+        a
+        for s in inside_brackets if ABA.findall(s)
+        for a in ABA.findall(s)
+    ]
+    outside_matches = [
+        a
+        for s in outside_brackets if ABA.findall(s)
+        for a in ABA.findall(s)
+    ]
+    return any((b, a) in inside_matches for [a, b] in outside_matches)
+
+
+assert support_ssl('aba[bab]xyz')
+assert not support_ssl('xyx[xyx]xyx')
+assert support_ssl('aaa[kek]eke')
+assert support_ssl("zazbz[bzb]cdb")
+
+print(f'Solution for part 2: {sum(support_ssl(l) for l in day07)}')
