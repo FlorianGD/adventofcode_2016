@@ -34,3 +34,28 @@ with open('day09_input.txt') as f:
 
 decompressed = ''.join(decompress(day9))
 print(f'Solution for part 1: {len(decompressed)}')
+
+# Part 2
+# When we read next, we need to also decompress what is inside.
+day9 = re.sub(r'\s', '', day9)
+
+
+def decompress_v2(code: str) -> str:
+    if "(" not in code:
+        return len(code)
+    i = code.index('(')
+    j = code.index('x')
+    k = code.index(')')
+    num = int(code[i+1:j])
+    times = int(code[j+1:k])
+    to_decompress = code[k+1:k+1+num]
+    next_code = code[k+1+num:]
+    return i + times * decompress_v2(to_decompress) + decompress_v2(next_code)
+
+
+assert decompress_v2('(3x3)XYZ') == len('XYZXYZXYZ')
+assert decompress_v2('X(8x2)(3x3)ABCY') == len('XABCABCABCABCABCABCY')
+assert decompress_v2('(27x12)(20x12)(13x14)(7x10)(1x12)A') == 241920
+assert decompress_v2('(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN') == 445  # noqa
+
+print(f'Solution for part 2: {decompress_v2(day9)}')
