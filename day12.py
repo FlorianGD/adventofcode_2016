@@ -78,4 +78,24 @@ print(f'Solution for part 1: {run(REGISTERS, day12)}')
 # Part 2
 
 # REG = [0, 0, 1, 0]
-# print(f'Solution for part 2: {run(REG, day12)}')
+# Breaking down what the algorithm actually does, we speed things up a lot
+
+a = b = c = 1
+d = 26
+
+c = 7
+d += c              # d = 33
+
+while d != 0:
+    c = a               # a = c =1
+    a += b              # a= 2, b=0, c=1, d=33
+    b = c               # b = c = prev_a
+    d -= 1
+
+c = 16
+while c != 0:
+    d = 17
+    a += d
+    c -= 1
+
+print(f'Solution for part 2: {a}')
