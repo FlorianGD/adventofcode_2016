@@ -11,14 +11,14 @@ TRIPLE = re.compile(r'(.)\1{2}')
 
 
 @lru_cache()
-def compute_hash(salt: str, index: int) -> str:
-    return md5((salt + str(index)).encode()).hexdigest()
+def compute_hash(val: str) -> str:
+    return md5(val.encode()).hexdigest()
 
 
 def find_fivele(salt: str, index: int, char: str) -> bool:
     """Look the next 1000 indexes for 5 times char in a hash"""
     for i in range(index + 1, index + 1001):
-        if char * 5 in compute_hash(salt, i):
+        if char * 5 in compute_hash(salt + str(i)):
             return True
     return False
 
@@ -30,7 +30,7 @@ def next_index(salt: str) -> Generator:
     """
     index = 0
     while True:
-        h = compute_hash(salt, index)
+        h = compute_hash(salt + str(index))
         m = TRIPLE.search(h)
         if m:
             char = m.group(1)
