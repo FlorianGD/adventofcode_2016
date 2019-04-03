@@ -41,3 +41,7 @@ def find_start(disks: List[Disk]) -> int:
 
 day15 = read_input('day15_input.txt')
 print(f'Solution for part 1: {find_start(day15)}')
+
+# Part 2
+day15.append(Disk(7, 11, 0))
+print(f'Solution for part 2: {find_start(day15)}')
