@@ -55,8 +55,37 @@ def breadth_first_search(path: str) -> str:
                     queue.appendleft((new_pos, new_path))
 
 
-assert breadth_first_search("ihgpwlah") == 'DDRRRD'
-assert breadth_first_search('kglvqrro') == 'DDUDRLRRUDRD'
-assert breadth_first_search('ulqzkmiv') == 'DRURDRUDDLLDLUURRDULRLDUUDDDRR'
+assert breadth_first_search("ihgpwlah") == "DDRRRD"
+assert breadth_first_search("kglvqrro") == "DDUDRLRRUDRD"
+assert breadth_first_search("ulqzkmiv") == "DRURDRUDDLLDLUURRDULRLDUUDDDRR"
 
-print(f'Solution for part 1: {breadth_first_search(INPUT)}')
+print(f"Solution for part 1: {breadth_first_search(INPUT)}")
+
+# Part 2
+# We now need to find the longest path that ends in the bottom right corner,
+# being reminded that we cannot go trhough this node, only end in it.
+
+
+def longest_path(path: str) -> int:
+    """Find all the paths"""
+    init_len = len(path)
+    goal = 3 + 3j
+    queue = deque([(0, path)])
+    paths = []
+    while queue:
+        pos, path = queue.pop()
+        for new_pos, new_path in move(pos, path):
+            if is_valid(new_pos):
+                if new_pos == goal:
+                    paths.append(len(new_path[init_len:]))
+                else:
+                    queue.appendleft((new_pos, new_path))
+    # by construction, the longest path will be the last one
+    return paths.pop()
+
+
+assert longest_path("ihgpwlah") == 370
+assert longest_path("kglvqrro") == 492
+assert longest_path("ulqzkmiv") == 830
+
+print(f"Solution for part 2: {longest_path(INPUT)}")
