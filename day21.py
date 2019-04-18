@@ -2,6 +2,7 @@
 
 from collections import deque
 from typing import Deque, List
+from itertools import permutations
 
 
 def swap_position(x: int, y: int, password: Deque) -> None:
@@ -93,3 +94,19 @@ with open("./day21_input.txt") as f:
     day21 = f.read().splitlines()
 
 print(f'Solution for part 1: {scramble(day21, deque("abcdefgh"))}')
+
+
+# Part 2
+# We need to unscramble the password. As the password is only 8 letters long,
+# I will brute force it.
+
+
+def unscramble(scrambled: str) -> str:
+    """Brute force unscrambling of the password."""
+    for password in permutations(scrambled):
+        if scramble(day21, deque(password)) == scrambled:
+            return "".join(password)
+    raise ValueError("Password not found.")
+
+
+print(f'Solution for part 2: {unscramble("fbgdceah")}')
